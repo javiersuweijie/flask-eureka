@@ -7,6 +7,7 @@ import logging
 import os
 import random
 import time
+import base64
 from threading import Thread
 
 try:
@@ -71,7 +72,8 @@ class EurekaClient(object):
                  context="eureka/v2",
                  eureka_port=None,
                  heartbeat_interval=None,
-                 service_path=None):
+                 service_path=None,
+                 authorization=None):
 
         self.app_name = name
 
@@ -89,6 +91,7 @@ class EurekaClient(object):
         self.eureka_port = eureka_port
         self.heartbeat_task = None
         self.instance_id = instance_id
+        self.authorization = "admin:password"
 
         host_info = HostInfo().get()
 
@@ -119,6 +122,12 @@ class EurekaClient(object):
     def _get_zone_urls_from_dns(self, domain):
         for zone in self._get_txt_records_from_dns(domain):
             yield zone
+
+    def _create_headers(self):
+        header = {'Content-Type': 'application/json'}
+        encoded_auth = base64.b64encode(self.authorization.encode('utf-8')).decode("utf-8")
+        header['Authorization'] = 'Basic %s' % encoded_auth
+        return header
 
     def get_zones_from_dns(self):
         return {
@@ -254,7 +263,7 @@ class EurekaClient(object):
             try:
                 self.requests.POST(
                     url=urljoin(eureka_url, self.service_path + "/%s" % self.app_name), body=instance_data,
-                    headers={'Content-Type': 'application/json'})
+                    headers=self._create_headers())
                 success = True
             except ApiException as ex:
                 success = False
@@ -272,7 +281,8 @@ class EurekaClient(object):
                 self.requests.PUT(url=urljoin(eureka_url, self.service_path + '/%s/%s' % (
                     self.app_name,
                     self.get_instance_id()
-                )))
+                )),
+                headers=self._create_headers())
                 success = True
             except ApiException as ex:
                 if ex.status == 404:
