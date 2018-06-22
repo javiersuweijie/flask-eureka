@@ -47,6 +47,7 @@ class Eureka(object):
         heartbeat_interval = self.app.config.get(EurekaClient.EUREKA_HEARTBEAT_INTERVAL, None)
         service_path = self.app.config.get(EurekaClient.EUREKA_SERVICE_PATH, None)
         port = self.app.config.get(EurekaClient.EUREKA_INSTANCE_PORT, self._get_service_port())
+        authorization = self.app.config.get(EurekaClient.EUREKA_AUTHORIZATION, None)
 
         eureka_client = EurekaClient(name=name, host_name=host_name,
                                      eureka_url=eureka_url,
@@ -54,6 +55,7 @@ class Eureka(object):
                                      heartbeat_interval=heartbeat_interval,
                                      service_path=service_path,
                                      port=port,
+                                     authorization=authorization,
                                      **kwargs)
         eureka_client.star()
 

@@ -55,6 +55,7 @@ class EurekaClient(object):
     EUREKA_SERVICE_PATH = 'EUREKA_SERVICE_PATH'
     EUREKA_INSTANCE_HOSTNAME = 'EUREKA_INSTANCE_HOSTNAME'
     EUREKA_INSTANCE_PORT = 'EUREKA_INSTANCE_PORT'
+    EUREKA_AUTHORIZATION = 'EUREKA_AUTHORIZATION'
 
     def __init__(self,
                  name,
@@ -91,7 +92,7 @@ class EurekaClient(object):
         self.eureka_port = eureka_port
         self.heartbeat_task = None
         self.instance_id = instance_id
-        self.authorization = "admin:password"
+        self.authorization = authorization
 
         host_info = HostInfo().get()
 
@@ -125,8 +126,9 @@ class EurekaClient(object):
 
     def _create_headers(self):
         header = {'Content-Type': 'application/json'}
-        encoded_auth = base64.b64encode(self.authorization.encode('utf-8')).decode("utf-8")
-        header['Authorization'] = 'Basic %s' % encoded_auth
+        if self.authorization != None:
+            encoded_auth = base64.b64encode(self.authorization.encode('utf-8')).decode("utf-8")
+            header['Authorization'] = 'Basic %s' % encoded_auth
         return header
 
     def get_zones_from_dns(self):

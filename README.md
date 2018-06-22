@@ -52,3 +52,4 @@ The flask-eureka library integrate with flask's configuration mechanism. The fol
 - EUREKA_INSTANCE_HOSTNAME = The hostname used for registration on eureka. 
 - EUREKA_INSTANCE_PORT = The port number used for the instance
 - EUREKA_HEARTBEAT = Number of seconds used for updating registration status towards Eureka. Default is 90 seconds
+- EUREKA_AUTHORIZATION = Authentication for the eureka server `user:password`
