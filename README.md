@@ -1,3 +1,5 @@
+**NOTE:** We have switched to use [Sidecar](https://cloud.spring.io/spring-cloud-netflix/multi/multi__polyglot_support_with_sidecar.html) + python app for better integration with Spring Cloud
+
 # flask-eureka
 
 Flask Eureka Integration
